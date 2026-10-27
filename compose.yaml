@@ -1,0 +1,91 @@
+name: ptixiaki
+
+x-backend: &backend
+  image: ptixiaki-backend:local
+  build: .
+  environment: &backend-env
+    INFLUXDB_URL: http://influxdb:8086
+    INFLUXDB_TOKEN: ${INFLUXDB_TOKEN:?Run python3 infrastructure/init_env.py first}
+    INFLUXDB_ORG: ${INFLUXDB_ORG:-ptixiaki}
+    INFLUXDB_BUCKET: ${INFLUXDB_BUCKET:-telemetry}
+    MQTT_HOST: mqtt
+    MQTT_PORT: 1883
+    MQTT_TOPIC: ${MQTT_TOPIC:-ptixiaki/equipment-space-01/telemetry}
+    MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-ptixiaki-ingestion}
+    DEVICE_ID: ${DEVICE_ID:-esp32-rack-01}
+    DEVICE_OFFLINE_SECONDS: ${DEVICE_OFFLINE_SECONDS:-120}
+  init: true
+  restart: unless-stopped
+
+services:
+  mqtt:
+    image: eclipse-mosquitto@sha256:09b62ff32c2e7b64d4b431b9a89236073289b68db273de2b089edeb9b0d92b5c
+    ports: ["127.0.0.1:1883:1883"]
+    volumes:
+      - ./infrastructure/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./data/mosquitto:/mosquitto/data
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "127.0.0.1", "-t", "ptixiaki/health", "-m", "ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  influxdb:
+    image: influxdb@sha256:b8d940ca9376f85118260f5b6bd236b8a00b1749c3350c5578d4cde8e27f31f2
+    ports: ["127.0.0.1:8086:8086"]
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME:-ptixiaki}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:?Run python3 infrastructure/init_env.py first}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN:?Run python3 infrastructure/init_env.py first}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG:-ptixiaki}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET:-telemetry}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${INFLUXDB_RETENTION:-0s}
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb2
+      - ./data/influxdb-config:/etc/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping", "--host", "http://localhost:8086"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    <<: *backend
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      influxdb: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "ptixiaki.worker"]
+    depends_on:
+      mqtt: {condition: service_healthy}
+      influxdb: {condition: service_healthy}
+
+  web:
+    build: ./frontend
+    ports: ["127.0.0.1:8080:80"]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "wget", "-Y", "off", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+  simulator:
+    <<: *backend
+    profiles: [demo]
+    command: ["python", "scripts/simulate.py", "--interval", "5"]
+    depends_on:
+      worker: {condition: service_started}
+      api: {condition: service_healthy}
