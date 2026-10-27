@@ -16,7 +16,22 @@
 
 Build a small but complete **IoT environmental monitoring and anomaly-detection system for one real AV/equipment space or rack**. It will use **exactly one ESP32 development board and one physical environmental sensor module**, with a **no-soldering** build. The latest hardware choice is a **Seeed Grove BME280**, which measures temperature, relative humidity, and barometric pressure in one module. The ESP32 sends readings over **Wi-Fi/MQTT** to a backend; readings are stored as time series and displayed in a browser. Collect **3–6 weeks** of real-world data; compare fixed thresholds, temperature change rate, statistical detectors, and at least one ML anomaly detector, using documented controlled/synthetic anomalies and rigorous evaluation metrics.
 
-**Project status on 27 October 2026:** Thesis application **submitted successfully** (student confirmed on 19 October); supervisor expressed agreement with the research direction and proposed title/committee. **No confirmed hardware purchase, code implementation, deployment, or data collection yet.**
+**Initial handoff status on 27 October 2026:** Thesis application **submitted successfully** (student confirmed on 19 October); supervisor expressed agreement with the research direction and proposed title/committee. At that point, no hardware purchase, code implementation, deployment, or data collection was confirmed.
+
+### Implementation update — 27 October 2026
+
+The first **software-only MVP** is now implemented and verified with explicitly synthetic data:
+
+- A seeded synthetic publisher sends the one configured device's temperature, relative humidity and pressure over MQTT QoS 1.
+- A separate Python ingestion worker validates units, physical plausibility, UTC timestamps and the configured device ID, and writes to InfluxDB 2. It retries failed writes and acknowledges valid messages only after storage succeeds.
+- FastAPI exposes authenticated database readiness, latest readings, and bounded chronological history. Synthetic and sensor records are stored and queried separately; identical message redelivery is idempotent.
+- A React dashboard shows current readings, a timestamp-based history chart, source/window/metric controls, and explicit loading, empty, stale and error states. It uses UTC and labels simulation visibly.
+- Docker Compose runs the broker, database, worker, API and web UI, with an optional simulator profile. Dependency lockfiles, local credential initialization and setup instructions are in the repository.
+- Validation completed: **74 backend tests**, **7 frontend tests**, the frontend production build, container startup, actual MQTT→InfluxDB→HTTP checks, and desktop/mobile browser checks. The pipeline check verifies duplicate handling, malformed/invalid input rejection and source separation. These are software checks, not research measurements.
+
+**Still unconfirmed or unimplemented:** hardware purchase and firmware, actual BME280 readings, site permission and deployment, 3–6 weeks of real observations, alerts/incident handling, anomaly detectors and their experimental evaluation. No ML performance or real-world monitoring result is claimed. The simulator's five-second interval and the 120-second offline threshold are development defaults, not finalized research settings.
+
+See `README.md` for commands and `docs/telemetry.md` for the implemented contract and delivery limitations. Local `.env` and `data/` contain development credentials/state and must stay out of Git.
 
 ---
 
@@ -235,16 +250,17 @@ Live sensor reading → MQTT → database → dashboard; carefully staged nearby
 
 ---
 
-## 8. Suggested implementation milestones (not yet completed)
+## 8. Implementation milestones (updated after the software MVP)
 
 - [ ] Confirm official title, committee appointment, and supervisor's expectations.
 - [ ] Confirm **written installation permission** and physical placement/power/Wi-Fi/server hosting.
 - [ ] Check Skroutz listings, matching connectors, Cypriot shipping, and purchase **one ESP32 + one Grove BME280 + appropriate leads**.
 - [ ] Verify power, pinout, flash firmware and read BME280 values via USB serial.
 - [ ] ESP32 Wi-Fi connection and MQTT publishing with retries.
-- [ ] Mosquitto broker and end-to-end ingestion to InfluxDB.
-- [ ] Docker Compose / FastAPI backend, APIs and health checks.
-- [ ] React dashboard with live and historical readings, alert state, node last-seen.
+- [x] Mosquitto broker and end-to-end ingestion to InfluxDB with a clearly labeled **synthetic publisher**; physical ESP32 ingestion remains pending.
+- [x] Docker Compose / FastAPI backend, read APIs and database readiness checks.
+- [x] React dashboard with latest/history views, explicit data sources and reading-age status, verified using synthetic data.
+- [ ] Dashboard alerts, incident history and acknowledgment behavior.
 - [ ] Deployment/monitoring and **3–6 weeks real data**.
 - [ ] Controlled experiment log and synthetic anomaly generation where justified.
 - [ ] Baseline threshold/rate/statistical detectors.

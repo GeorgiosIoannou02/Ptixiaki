@@ -1,0 +1,18 @@
+# Optional build-time trust for a managed cloud proxy. Never disables TLS checks.
+# Used with: docker compose -f compose.yaml -f infrastructure/compose.cloud.yaml ...
+services:
+  api:
+    build:
+      secrets: [build_ca]
+  worker:
+    build:
+      secrets: [build_ca]
+  simulator:
+    build:
+      secrets: [build_ca]
+  web:
+    build:
+      secrets: [build_ca]
+secrets:
+  build_ca:
+    file: ${PTIXIAKI_CA_BUNDLE:?Set PTIXIAKI_CA_BUNDLE to the trusted cloud CA bundle path}
