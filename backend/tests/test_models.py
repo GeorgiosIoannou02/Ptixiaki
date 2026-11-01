@@ -120,6 +120,39 @@ def test_real_readings_keep_explicit_sensor_source(payload):
     assert parse_payload(json.dumps(payload).encode()).synthetic is False
 
 
+@pytest.mark.parametrize("field,value", [
+    ("synthetic", False),
+    ("device_id", "esp32-rack-01"),
+    ("temperature_c", 30.0),
+])
+def test_duplicate_json_fields_are_rejected_even_when_values_match(payload, field, value):
+    wire = json.dumps(payload)[:-1] + "," + json.dumps(field) + ":" + json.dumps(value) + "}"
+    with pytest.raises(ValueError, match="duplicate fields"):
+        parse_payload(wire.encode())
+
+
+@pytest.mark.parametrize("timestamp", [
+    "2026-01-01T12:00:00.1234567Z",
+    "2026-01-01T12:00:00.123456789+02:00",
+    "2026-01-01T12:00:00,1234567Z",
+])
+def test_submicrosecond_timestamps_are_rejected_before_point_identity_is_lost(payload, timestamp):
+    payload["timestamp_utc"] = timestamp
+    with pytest.raises(ValueError, match="six fractional digits"):
+        parse_payload(json.dumps(payload).encode())
+
+
+def test_microsecond_precision_survives_wire_parsing(payload):
+    payload["timestamp_utc"] = "2026-01-01T12:00:00.123456Z"
+    assert parse_payload(json.dumps(payload).encode()).timestamp_utc.microsecond == 123456
+
+
+def test_deeply_nested_json_is_a_validation_error():
+    # The byte limit alone does not bound JSON nesting enough for Python's parser.
+    with pytest.raises(ValueError):
+        parse_payload(b"[" * 1500 + b"0" + b"]" * 1500)
+
+
 @pytest.mark.parametrize("timestamp", [
     "0001-01-01T00:00:00+01:00",
     "9999-12-31T23:59:59-01:00",
@@ -128,3 +161,4 @@ def test_timezone_overflow_is_a_validation_error(payload, timestamp):
     payload["timestamp_utc"] = timestamp
     with pytest.raises(ValidationError, match="cannot be represented in UTC"):
         parse_payload(json.dumps(payload).encode())
+

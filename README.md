@@ -10,6 +10,8 @@ Synthetic publisher → Mosquitto → Python ingestion worker → InfluxDB 2
 
 The physical sensor, firmware, site deployment, real data collection, alerts, and anomaly-detection comparison are still pending. Simulation does not establish hardware readiness or research results. Read [the project context](PTIXIAKI_PROJECT_CONTEXT.md) for the confirmed scope and open decisions.
 
+The [repository review and prioritized checklist](docs/review-and-roadmap.md) covers the remaining hardware, deployment, alerts and evaluation milestones.
+
 ## Run the software demo
 
 Requirements: Docker Engine with Compose v2 and Python 3.12. Install `uv` to run the Python checks locally. Node 22.12+ is needed only for frontend development outside Docker.
@@ -61,6 +63,14 @@ npm ci
 npm test
 npm run build
 ```
+
+GitHub Actions runs these backend/frontend checks and builds an isolated Docker stack to exercise the real MQTT-to-HTTP pipeline on pull requests and pushes to `main`.
+
+## Export data
+
+Use **Download CSV** in the dashboard to save the displayed history, including all metrics, UTC timestamps and source/truncation metadata. It contains at most the latest 1,000 points in the selected window.
+
+For a complete interval of up to 42 days, use `python -m ptixiaki.export` with an explicit source, start, end and new output path. See [export instructions](docs/export.md). This streams raw readings for later analysis, preserves microsecond timestamps, and never replaces an existing export. Keep research data under the ignored `exports/` directory.
 
 ## Develop locally
 
@@ -114,3 +124,4 @@ The optional override mounts the trusted CA bundle only during dependency instal
 - `data/`: ignored local database and broker state.
 
 Next milestones are the actual ESP32/BME280 firmware and hardware check, real deployment permission and hosting, then alerts, data collection, and chronological baseline/ML evaluation. No ML performance claim follows from this software demo.
+

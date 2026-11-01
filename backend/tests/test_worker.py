@@ -115,6 +115,14 @@ def test_database_exception_message_is_not_logged(settings, message, caplog):
     assert "retrying without acknowledgement" in caplog.text
 
 
+def test_ambiguous_source_flag_is_discarded_without_storage(settings, message):
+    message.payload = message.payload[:-1] + b', "synthetic": false}'
+    store, client = Mock(), Mock()
+    IngestionWorker(settings, store).on_message(client, None, message)
+    store.write.assert_not_called()
+    client.ack.assert_called_once_with(42, 1)
+
+
 @pytest.mark.parametrize("timestamp", [
     "0001-01-01T00:00:00+01:00",
     "9999-12-31T23:59:59-01:00",
@@ -129,3 +137,4 @@ def test_unrepresentable_utc_timestamp_is_discarded_not_retried(settings, messag
     store.write.assert_not_called()
     client.ack.assert_called_once_with(42, 1)
     assert clock.waits == []
+

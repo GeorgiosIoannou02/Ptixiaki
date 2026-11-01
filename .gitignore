@@ -15,3 +15,5 @@ frontend/coverage/
 data/
 *.log
 .DS_Store
+
+exports/

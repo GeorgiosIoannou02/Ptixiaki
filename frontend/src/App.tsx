@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Metric, Source, TimeWindow } from "./api";
 import HistoryChart, { METRICS, utcTime } from "./HistoryChart";
 import { useReadings } from "./useReadings";
+import { downloadHistory } from "./exportCsv";
 
 function ageLabel(seconds: number | null) {
   if (seconds === null) return "No reading received";
@@ -330,6 +331,21 @@ export default function App() {
               shorter window for more detail.
             </p>
           )}
+          <div className="history-export">
+            <button
+              type="button"
+              className="refresh-button"
+              disabled={state.readings.length === 0 || state.loading}
+              aria-describedby="export-description"
+              onClick={() => downloadHistory(state.readings, source, window, state.truncated)}
+            >
+              Download displayed CSV
+            </button>
+            <p id="export-description">
+              Exports all three measurements for the displayed samples only
+              (up to 1,000), with UTC timestamps and the data source.
+            </p>
+          </div>
         </section>
 
         <footer className="page-footer">
@@ -343,3 +359,4 @@ export default function App() {
     </div>
   );
 }
+
