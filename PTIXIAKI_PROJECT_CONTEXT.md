@@ -33,6 +33,28 @@ The first **software-only MVP** is now implemented and verified with explicitly 
 
 See `README.md` for commands and `docs/telemetry.md` for the implemented contract and delivery limitations. Local `.env` and `data/` contain development credentials/state and must stay out of Git.
 
+### Software review update — 1 November 2026
+
+- Reviewed the existing backend, dashboard, infrastructure and thesis roadmap. The
+  prioritized remaining work and acceptance criteria are in `docs/review-and-roadmap.md`.
+- Hardened telemetry validation against duplicate JSON fields, sub-microsecond
+  timestamps that would collapse storage identities, and excessively nested input.
+- Added dashboard CSV download for the displayed, bounded history, and a separate
+  streaming CLI for complete single-source intervals up to 42 days. Research
+  exports preserve UTC/microseconds, publish atomically, and never overwrite an
+  existing file. See `docs/export.md`; private exports belong in ignored `exports/`.
+- Added GitHub Actions backend, frontend and Docker pipeline checks, plus
+  credential initialization regression tests and stricter frontend response validation.
+- Verification: 113 backend tests, 17 frontend tests, production frontend build,
+  isolated Docker startup, MQTT-to-InfluxDB-to-HTTP checks, web/proxy HTTP checks,
+  and live CSV exports for synthetic and empty sensor sources. These are software
+  checks; no real sensor data or experimental results were generated.
+
+Hardware purchase/firmware, installation permission, deployment configuration,
+collection, alerts and detector evaluation remain pending as described above.
+The original 27 October historical context remains below; this review does not
+resolve its site, sampling-rate, threshold or administrative questions.
+
 ---
 
 ## 2. Academic context and topic
@@ -260,6 +282,7 @@ Live sensor reading → MQTT → database → dashboard; carefully staged nearby
 - [x] Mosquitto broker and end-to-end ingestion to InfluxDB with a clearly labeled **synthetic publisher**; physical ESP32 ingestion remains pending.
 - [x] Docker Compose / FastAPI backend, read APIs and database readiness checks.
 - [x] React dashboard with latest/history views, explicit data sources and reading-age status, verified using synthetic data.
+- [x] Source-specific CSV snapshot/research exports, stricter telemetry validation, and automated software-check workflow (1 November review).
 - [ ] Dashboard alerts, incident history and acknowledgment behavior.
 - [ ] Deployment/monitoring and **3–6 weeks real data**.
 - [ ] Controlled experiment log and synthetic anomaly generation where justified.
@@ -351,4 +374,5 @@ This layout is a suggestion, **not a claim that any such files already exist**.
 
 ---
 
-*Last context update: 27 October 2026. Amend this file as decisions, purchases, deployment approvals, code and experimental results become confirmed.*
+*Last software context update: 1 November 2026. Original personal/academic snapshot: 27 October 2026. Amend this file as decisions, purchases, deployment approvals, code and experimental results become confirmed.*
+

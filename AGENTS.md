@@ -5,6 +5,7 @@
 ## Non-negotiable scope
 - Exactly **one ESP32** and **one Seeed Grove BME280** sensor module (temperature, humidity, pressure). No second physical sensor, multi-node hardware, custom PCB, or soldering unless the user explicitly changes scope.
 - Hardware purchases, site permissions and physical deployment remain unconfirmed. A synthetic software MVP is now implemented; read the implementation update in `PTIXIAKI_PROJECT_CONTEXT.md` and inspect files before extending it.
+- The software review adds strict telemetry validation, CSV snapshot/research exports and CI. Read `docs/review-and-roadmap.md` for remaining milestones; neither CSV export nor CI establishes real collection or detector validation.
 - The research question is whether ML adds value beyond thresholds, ΔT/Δt, rolling z-score/EWMA on **3–6 weeks of real time-series data** with ethically/safely induced and logged anomalies.
 - Prioritize minimal reproducible end-to-end pipeline: ESP32 → MQTT Mosquitto → Python/FastAPI + InfluxDB → React dashboard → evaluation.
 
@@ -23,3 +24,4 @@
 4. Update the project README/checklist and this handoff file when milestones are actually completed.
 
 For emails to the supervisor and university, use professional **Greek**. For source code and technical docs, English is fine.
+

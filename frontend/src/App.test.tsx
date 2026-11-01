@@ -8,6 +8,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
+import * as exportCsv from "./exportCsv";
 import type { Source, Telemetry } from "./api";
 
 const simulated: Telemetry = {
@@ -43,6 +44,25 @@ afterEach(() => {
 });
 
 describe("dashboard data integrity", () => {
+  it("exports only the selected history and disables download for an empty source", async () => {
+    const download = vi.spyOn(exportCsv, "downloadHistory").mockImplementation(() => {});
+    vi.stubGlobal("fetch", vi.fn<typeof fetch>(async (input) => {
+      const url = String(input);
+      const source = url.includes("source=sensor") ? "sensor" : "synthetic";
+      return json(bodyFor(url, source, source === "synthetic" ? simulated : null));
+    }));
+    render(<App />);
+    const button = screen.getByRole("button", { name: "Download displayed CSV" }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    await screen.findByText("25.4", { selector: "p" });
+    fireEvent.click(button);
+    expect(download).toHaveBeenCalledWith([simulated], "synthetic", "1h", false);
+    fireEvent.click(screen.getByRole("button", { name: "Sensor" }));
+    expect(button.disabled).toBe(true);
+    await screen.findByText("No physical sensor reading received yet.");
+    expect(button.disabled).toBe(true);
+  });
+
   it("labels simulation and clears simulated values when switching to an empty sensor source", async () => {
     const fetcher = vi.fn<typeof fetch>(async (input) => {
       const url = String(input);
@@ -148,3 +168,4 @@ describe("dashboard data integrity", () => {
     expect(signals.every((signal) => signal.aborted)).toBe(true);
   });
 });
+

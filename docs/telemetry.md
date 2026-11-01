@@ -28,7 +28,7 @@ Example **synthetic** message:
 | `pressure_hpa` | Finite JSON number, 300 to 1100 hPa |
 | `synthetic` | JSON boolean, explicitly supplied |
 
-These numeric limits are broad sensor plausibility limits, **not environmental alert thresholds**. Actual alert ranges and acquisition frequency remain open project decisions. Numeric strings, booleans used as measurements, non-finite numbers, unknown fields, unknown devices, and payloads larger than 4,096 bytes are rejected.
+These numeric limits are broad sensor plausibility limits, **not environmental alert thresholds**. Actual alert ranges and acquisition frequency remain open project decisions. Numeric strings, booleans used as measurements, non-finite numbers, unknown fields, duplicate JSON keys, unknown devices, excessively nested JSON, and payloads larger than 4,096 bytes are rejected. Timestamp fractions must have at most six digits; finer precision is rejected rather than silently truncated into a shared storage identity.
 
 ## Delivery and storage
 
@@ -42,4 +42,7 @@ Mosquitto persistence retains established subscriptions and queued QoS 1 message
 
 History returns up to the newest 1,000 raw points in the chosen window, sorted oldest first. The UI reports truncation; no aggregation or imputation is hidden. Latest readings are selected by acquisition timestamp, so a delayed old message does not replace a newer measurement. Sensor and synthetic modes use separate queries.
 
+The dashboard can download that bounded snapshot as CSV. For complete research intervals up to 42 days, use the separate [export CLI](export.md), which streams all matching points without the dashboard limit.
+
 The configured offline threshold defaults to 120 seconds for this prototype. It is a development default, not an experimentally established acquisition policy. API readiness checks database access; worker health is demonstrated by the full MQTT-to-HTTP integration check. Data validation, uptime, and successful transport do not validate anomaly detectors or provide deployment authorization.
+

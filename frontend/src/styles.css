@@ -452,6 +452,22 @@ h2 {
   color: #95a091;
   line-height: 1.6;
 }
+.history-export {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0 0;
+}
+
+.history-export p {
+  flex: 1 1 280px;
+  margin: 0;
+  color: #64736e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .truncated-note {
   font-size: 11px;
   padding: 0 0 16px;
@@ -668,3 +684,4 @@ h2 {
     font-size: 12px;
   }
 }
+
