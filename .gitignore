@@ -17,3 +17,8 @@ data/
 .DS_Store
 
 exports/
+
+firmware/.pio/
+firmware/include/config.h
+firmware/.venv/
+infrastructure/mqtt-passwords

@@ -59,6 +59,17 @@ resolve its site, sampling-rate, threshold or administrative questions.
 
 ---
 
+### Firmware implementation update — 6 November 2026
+
+PlatformIO firmware now implements one BME280 on an ESP32-WROOM-32 target,
+I²C address probing/error handling, Wi-Fi and MQTT reconnects, synchronized UTC,
+QoS 1 publishing with `synthetic: false`, and a single pending reading in RAM.
+See `firmware/README.md` for dependencies, CachyOS flashing, authenticated lab
+broker configuration and physical acceptance checks. The exact board, sensor
+purchase, flashing, actual readings and outage behavior remain unverified on
+hardware. Earlier milestone lists describe historical status; firmware code is
+implemented, but hardware integration and real data collection remain pending.
+
 ## 2. Academic context and topic
 
 ### Proposed/selected Greek title

@@ -8,7 +8,7 @@ Synthetic publisher → Mosquitto → Python ingestion worker → InfluxDB 2
                                                     FastAPI → React dashboard
 ```
 
-The physical sensor, firmware, site deployment, real data collection, alerts, and anomaly-detection comparison are still pending. Simulation does not establish hardware readiness or research results. Read [the project context](PROJECT_CONTEXT.md) for the confirmed scope and open decisions.
+The physical sensor validation, site deployment, real data collection, alerts, and anomaly-detection comparison are still pending. Simulation does not establish hardware readiness or research results. Read [the project context](PROJECT_CONTEXT.md) for the confirmed scope and open decisions.
 
 The [repository review and prioritized checklist](docs/review-and-roadmap.md) covers the remaining hardware, deployment, alerts and evaluation milestones.
 
@@ -16,9 +16,13 @@ The [repository review and prioritized checklist](docs/review-and-roadmap.md) co
 
 The project now uses `iot-monitor` for Docker and package names and `iot_monitor` for Python imports. Stop the previous Compose project before starting this version to release its ports. Keep the existing `.env` and `data/` together: database organization and username values identify the initialized database and must not be replaced with new defaults. The initializer preserves existing credentials. Update `MQTT_TOPIC` and `MQTT_CLIENT_ID` together on publishers and the worker if adopting the new defaults. Cloud builds now use `IOT_MONITOR_CA_BUNDLE`.
 
+## ESP32 firmware
+
+[PlatformIO firmware and CachyOS flashing instructions](firmware/README.md) implement BME280 acquisition, UTC timestamps and reconnecting MQTT QoS 1 publishing. The default target is ESP32-WROOM-32 (`esp32dev`), pending confirmation of the purchased board. An opt-in authenticated LAN broker override is provided; the normal demo remains loopback-only. Firmware compilation is not physical hardware validation.
+
 ## Run the software demo
 
-Requirements: Docker Engine with Compose v2 and Python 3.12. Install `uv` to run the Python checks locally. Node 22.12+ is needed only for frontend development outside Docker.
+Requirements: Docker Engine with Compose v2 and Python 3.12. Install `uv` and a C++ compiler (`g++`) to run the backend and firmware-contract checks locally. Node 22.12+ is needed only for frontend development outside Docker.
 
 From the repository root:
 
@@ -127,5 +131,5 @@ The optional override mounts the trusted CA bundle only during dependency instal
 - `infrastructure/`: local initialization, broker configuration, cloud build override.
 - `data/`: ignored local database and broker state.
 
-Next milestones are the actual ESP32/BME280 firmware and hardware check, real deployment permission and hosting, then alerts, data collection, and chronological baseline/ML evaluation. No ML performance claim follows from this software demo.
+Next milestones are flashing and validating the ESP32/BME280 firmware on actual hardware, real deployment permission and hosting, then alerts, data collection, and chronological baseline/ML evaluation. No ML performance claim follows from this software demo.
 
