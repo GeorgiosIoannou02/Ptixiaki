@@ -79,7 +79,7 @@ def export_csv(client, settings: Settings, *, source: Source, start: datetime,
     try:
         # NamedTemporaryFile uses 0600, including when the process umask is lax.
         with tempfile.NamedTemporaryFile(mode="w", newline="", encoding="utf-8",
-                                         dir=output.parent, prefix=".ptixiaki-export-",
+                                         dir=output.parent, prefix=".iot-monitor-export-",
                                          suffix=".tmp", delete=False) as handle:
             temporary = Path(handle.name)
             writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS)

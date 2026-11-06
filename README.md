@@ -1,4 +1,4 @@
-# PTIXIAKI — environmental monitoring
+# IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection
 
 A bachelor's thesis prototype for **one ESP32 and one Grove BME280** in one equipment space. The first software milestone runs with explicitly simulated readings:
 
@@ -8,9 +8,13 @@ Synthetic publisher → Mosquitto → Python ingestion worker → InfluxDB 2
                                                     FastAPI → React dashboard
 ```
 
-The physical sensor, firmware, site deployment, real data collection, alerts, and anomaly-detection comparison are still pending. Simulation does not establish hardware readiness or research results. Read [the project context](PTIXIAKI_PROJECT_CONTEXT.md) for the confirmed scope and open decisions.
+The physical sensor, firmware, site deployment, real data collection, alerts, and anomaly-detection comparison are still pending. Simulation does not establish hardware readiness or research results. Read [the project context](PROJECT_CONTEXT.md) for the confirmed scope and open decisions.
 
 The [repository review and prioritized checklist](docs/review-and-roadmap.md) covers the remaining hardware, deployment, alerts and evaluation milestones.
+
+## Upgrading an existing checkout
+
+The project now uses `iot-monitor` for Docker and package names and `iot_monitor` for Python imports. Stop the previous Compose project before starting this version to release its ports. Keep the existing `.env` and `data/` together: database organization and username values identify the initialized database and must not be replaced with new defaults. The initializer preserves existing credentials. Update `MQTT_TOPIC` and `MQTT_CLIENT_ID` together on publishers and the worker if adopting the new defaults. Cloud builds now use `IOT_MONITOR_CA_BUNDLE`.
 
 ## Run the software demo
 
@@ -70,7 +74,7 @@ GitHub Actions runs these backend/frontend checks and builds an isolated Docker 
 
 Use **Download CSV** in the dashboard to save the displayed history, including all metrics, UTC timestamps and source/truncation metadata. It contains at most the latest 1,000 points in the selected window.
 
-For a complete interval of up to 42 days, use `python -m ptixiaki.export` with an explicit source, start, end and new output path. See [export instructions](docs/export.md). This streams raw readings for later analysis, preserves microsecond timestamps, and never replaces an existing export. Keep research data under the ignored `exports/` directory.
+For a complete interval of up to 42 days, use `python -m iot_monitor.export` with an explicit source, start, end and new output path. See [export instructions](docs/export.md). This streams raw readings for later analysis, preserves microsecond timestamps, and never replaces an existing export. Keep research data under the ignored `exports/` directory.
 
 ## Develop locally
 
@@ -84,8 +88,8 @@ uv sync --frozen
 Then use separate terminals from the repository root:
 
 ```bash
-uv run --frozen --env-file .env uvicorn ptixiaki.api:app --reload --host 127.0.0.1
-uv run --frozen --env-file .env python -m ptixiaki.worker
+uv run --frozen --env-file .env uvicorn iot_monitor.api:app --reload --host 127.0.0.1
+uv run --frozen --env-file .env python -m iot_monitor.worker
 uv run --frozen --env-file .env python scripts/simulate.py --count 12 --interval 5
 ```
 
@@ -105,10 +109,10 @@ See [the telemetry contract](docs/telemetry.md) for units, validation, MQTT beha
 The managed environment has a read-only home directory and a trusted egress proxy. Use writable tool caches and the supplied certificate bundle for container builds:
 
 ```bash
-export UV_CACHE_DIR=/workspace/ptixiaki-environment/uv-cache
-export npm_config_cache=/workspace/ptixiaki-environment/npm-cache
-export BUILDX_CONFIG=/workspace/ptixiaki-environment/buildx
-export PTIXIAKI_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+export UV_CACHE_DIR=/workspace/iot-monitor-environment/uv-cache
+export npm_config_cache=/workspace/iot-monitor-environment/npm-cache
+export BUILDX_CONFIG=/workspace/iot-monitor-environment/buildx
+export IOT_MONITOR_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 docker compose -f compose.yaml -f infrastructure/compose.cloud.yaml --profile demo up --build -d --wait
 ```
 
@@ -116,7 +120,7 @@ The optional override mounts the trusted CA bundle only during dependency instal
 
 ## Project layout
 
-- `backend/ptixiaki/`: validation, configuration, storage, API, and MQTT worker.
+- `backend/iot_monitor/`: validation, configuration, storage, API, and MQTT worker.
 - `backend/tests/`: backend regression tests.
 - `frontend/`: React dashboard, UI tests, and nginx packaging.
 - `scripts/`: synthetic publisher and full pipeline check.

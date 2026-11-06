@@ -42,7 +42,7 @@ describe("displayed history CSV", () => {
     const click = vi.spyOn(HTMLAnchorElement.prototype, "click")
       .mockImplementation(function (this: HTMLAnchorElement) {
         expect(this.isConnected).toBe(true);
-        expect(this.download).toBe("ptixiaki-synthetic-6h-displayed-history.csv");
+        expect(this.download).toBe("iot-monitor-synthetic-6h-displayed-history.csv");
         expect(this.href).toBe("blob:history-download");
       });
     downloadHistory([sample], "synthetic", "6h", true);

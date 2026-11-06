@@ -6,7 +6,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from ptixiaki.models import Telemetry, parse_payload
+from iot_monitor.models import Telemetry, parse_payload
 
 
 @pytest.fixture

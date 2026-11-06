@@ -16,4 +16,4 @@ RUN --mount=type=secret,id=build_ca \
     uv sync --frozen --no-dev --no-editable && useradd --uid 10001 --create-home app
 ENV PATH="/app/.venv/bin:$PATH"
 USER app
-CMD ["uvicorn", "ptixiaki.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "iot_monitor.api:app", "--host", "0.0.0.0", "--port", "8000"]

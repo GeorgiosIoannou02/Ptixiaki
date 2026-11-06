@@ -5,10 +5,10 @@ from datetime import datetime, timedelta, timezone
 from fastapi.testclient import TestClient
 import pytest
 
-from ptixiaki.api import create_app
-from ptixiaki.config import Settings
-from ptixiaki.models import Telemetry
-from ptixiaki.store import HistoryResult
+from iot_monitor.api import create_app
+from iot_monitor.config import Settings
+from iot_monitor.models import Telemetry
+from iot_monitor.store import HistoryResult
 
 
 def reading(*, synthetic=True, seconds_ago=0):

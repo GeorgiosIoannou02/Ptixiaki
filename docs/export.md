@@ -10,7 +10,7 @@ the repository root, with the local database running:
 
 ```bash
 uv sync --frozen
-uv run --frozen --env-file .env python -m ptixiaki.export \
+uv run --frozen --env-file .env python -m iot_monitor.export \
   --source sensor \
   --start 2026-10-01T00:00:00Z \
   --end 2026-11-01T00:00:00Z \

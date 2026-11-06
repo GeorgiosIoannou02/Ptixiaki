@@ -9,12 +9,12 @@ import re
 class Settings:
     influxdb_token: str = field(default="", repr=False)
     influxdb_url: str = "http://localhost:8086"
-    influxdb_org: str = "ptixiaki"
+    influxdb_org: str = "iot-monitor"
     influxdb_bucket: str = "telemetry"
     mqtt_host: str = "localhost"
     mqtt_port: int = 1883
-    mqtt_topic: str = "ptixiaki/equipment-space-01/telemetry"
-    mqtt_client_id: str = "ptixiaki-ingestion"
+    mqtt_topic: str = "iot-monitor/equipment-space-01/telemetry"
+    mqtt_client_id: str = "iot-monitor-ingestion"
     mqtt_username: str | None = None
     mqtt_password: str | None = field(default=None, repr=False)
     device_id: str = "esp32-rack-01"
@@ -51,12 +51,12 @@ class Settings:
         return cls(
             influxdb_token=os.environ.get("INFLUXDB_TOKEN", ""),
             influxdb_url=os.environ.get("INFLUXDB_URL", "http://localhost:8086"),
-            influxdb_org=os.environ.get("INFLUXDB_ORG", "ptixiaki"),
+            influxdb_org=os.environ.get("INFLUXDB_ORG", "iot-monitor"),
             influxdb_bucket=os.environ.get("INFLUXDB_BUCKET", "telemetry"),
             mqtt_host=os.environ.get("MQTT_HOST", "localhost"),
             mqtt_port=integer("MQTT_PORT", 1883),
-            mqtt_topic=os.environ.get("MQTT_TOPIC", "ptixiaki/equipment-space-01/telemetry"),
-            mqtt_client_id=os.environ.get("MQTT_CLIENT_ID", "ptixiaki-ingestion"),
+            mqtt_topic=os.environ.get("MQTT_TOPIC", "iot-monitor/equipment-space-01/telemetry"),
+            mqtt_client_id=os.environ.get("MQTT_CLIENT_ID", "iot-monitor-ingestion"),
             mqtt_username=os.environ.get("MQTT_USERNAME") or None,
             mqtt_password=os.environ.get("MQTT_PASSWORD") or None,
             device_id=os.environ.get("DEVICE_ID", "esp32-rack-01"),
