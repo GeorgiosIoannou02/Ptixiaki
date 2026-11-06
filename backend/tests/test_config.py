@@ -1,6 +1,6 @@
 import pytest
 
-from ptixiaki.config import Settings
+from iot_monitor.config import Settings
 
 
 def test_database_token_is_required(monkeypatch):
@@ -17,7 +17,7 @@ def test_settings_load_explicit_service_and_device_configuration(monkeypatch):
         "INFLUXDB_BUCKET": "test-bucket",
         "MQTT_HOST": "mqtt",
         "MQTT_PORT": "1884",
-        "MQTT_TOPIC": "ptixiaki/test/telemetry",
+        "MQTT_TOPIC": "iot-monitor/test/telemetry",
         "MQTT_CLIENT_ID": "test-ingestion",
         "MQTT_USERNAME": "test-user",
         "MQTT_PASSWORD": "test-password",
@@ -32,7 +32,7 @@ def test_settings_load_explicit_service_and_device_configuration(monkeypatch):
     assert config.influxdb_bucket == "test-bucket"
     assert config.mqtt_host == "mqtt"
     assert config.mqtt_port == 1884
-    assert config.mqtt_topic == "ptixiaki/test/telemetry"
+    assert config.mqtt_topic == "iot-monitor/test/telemetry"
     assert config.mqtt_client_id == "test-ingestion"
     assert config.mqtt_username == "test-user"
     assert config.mqtt_password == "test-password"

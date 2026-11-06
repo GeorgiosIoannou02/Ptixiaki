@@ -25,7 +25,7 @@ def create_app(settings: Settings | None = None, store=None) -> FastAPI:
         finally:
             application.state.store.close()
 
-    application = FastAPI(title="PTIXIAKI telemetry API", version="0.1.0", lifespan=lifespan)
+    application = FastAPI(title="IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection telemetry API", version="0.1.0", lifespan=lifespan)
 
     @application.get("/api/health")
     def health(request: Request):

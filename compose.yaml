@@ -1,17 +1,17 @@
-name: ptixiaki
+name: iot-monitor
 
 x-backend: &backend
-  image: ptixiaki-backend:local
+  image: iot-monitor-backend:local
   build: .
   environment: &backend-env
     INFLUXDB_URL: http://influxdb:8086
     INFLUXDB_TOKEN: ${INFLUXDB_TOKEN:?Run python3 infrastructure/init_env.py first}
-    INFLUXDB_ORG: ${INFLUXDB_ORG:-ptixiaki}
+    INFLUXDB_ORG: ${INFLUXDB_ORG:-iot-monitor}
     INFLUXDB_BUCKET: ${INFLUXDB_BUCKET:-telemetry}
     MQTT_HOST: mqtt
     MQTT_PORT: 1883
-    MQTT_TOPIC: ${MQTT_TOPIC:-ptixiaki/equipment-space-01/telemetry}
-    MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-ptixiaki-ingestion}
+    MQTT_TOPIC: ${MQTT_TOPIC:-iot-monitor/equipment-space-01/telemetry}
+    MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-iot-monitor-ingestion}
     DEVICE_ID: ${DEVICE_ID:-esp32-rack-01}
     DEVICE_OFFLINE_SECONDS: ${DEVICE_OFFLINE_SECONDS:-120}
   init: true
@@ -25,7 +25,7 @@ services:
       - ./infrastructure/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./data/mosquitto:/mosquitto/data
     healthcheck:
-      test: ["CMD", "mosquitto_pub", "-h", "127.0.0.1", "-t", "ptixiaki/health", "-m", "ready"]
+      test: ["CMD", "mosquitto_pub", "-h", "127.0.0.1", "-t", "iot-monitor/health", "-m", "ready"]
       interval: 5s
       timeout: 3s
       retries: 12
@@ -36,10 +36,10 @@ services:
     ports: ["127.0.0.1:8086:8086"]
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME:-ptixiaki}
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME:-iot-monitor}
       DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:?Run python3 infrastructure/init_env.py first}
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN:?Run python3 infrastructure/init_env.py first}
-      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG:-ptixiaki}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG:-iot-monitor}
       DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET:-telemetry}
       DOCKER_INFLUXDB_INIT_RETENTION: ${INFLUXDB_RETENTION:-0s}
     volumes:
@@ -65,7 +65,7 @@ services:
 
   worker:
     <<: *backend
-    command: ["python", "-m", "ptixiaki.worker"]
+    command: ["python", "-m", "iot_monitor.worker"]
     depends_on:
       mqtt: {condition: service_healthy}
       influxdb: {condition: service_healthy}

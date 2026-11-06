@@ -79,11 +79,11 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <a className="wordmark" href="/" aria-label="PTIXIAKI home">
-          <span className="brand-mark" aria-hidden="true">
-            p.
-          </span>{" "}
-          PTIXIAKI
+        <a className="wordmark" href="/" aria-label="IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection home">
+          <img className="brand-mark" src="/logo.svg" alt="" />
+          <span className="brand-title">IoT Environmental Monitoring System
+            <span className="brand-subtitle">for Equipment Spaces with Anomaly Detection</span>
+          </span>
         </a>
         <span className="header-caption">
           Environmental monitoring <span className="header-divider">/</span>{" "}

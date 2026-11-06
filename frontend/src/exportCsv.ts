@@ -37,7 +37,7 @@ export function downloadHistory(
   ));
   const link = document.createElement("a");
   link.href = url;
-  link.download = `ptixiaki-${source}-${window}-displayed-history.csv`;
+  link.download = `iot-monitor-${source}-${window}-displayed-history.csv`;
   document.body.appendChild(link);
   link.click();
   link.remove();

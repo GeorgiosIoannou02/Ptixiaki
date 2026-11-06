@@ -7,14 +7,14 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from ptixiaki.config import Settings
-from ptixiaki.models import Telemetry
-from ptixiaki.store import InfluxStore
+from iot_monitor.config import Settings
+from iot_monitor.models import Telemetry
+from iot_monitor.store import InfluxStore
 
 
 @pytest.fixture
 def store():
-    with patch("ptixiaki.store.InfluxDBClient") as client_class:
+    with patch("iot_monitor.store.InfluxDBClient") as client_class:
         result = InfluxStore(Settings(influxdb_token="test-only"))
         yield result
         result.close()

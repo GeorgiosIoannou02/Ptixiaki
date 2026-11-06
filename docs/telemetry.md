@@ -1,6 +1,6 @@
 # Telemetry contract
 
-This contract supports one configured device and one BME280 module. Default topic: `ptixiaki/equipment-space-01/telemetry`; default device ID: `esp32-rack-01`. Both are configurable through environment variables.
+This contract supports one configured device and one BME280 module. Default topic: `iot-monitor/equipment-space-01/telemetry`; default device ID: `esp32-rack-01`. Both are configurable through environment variables.
 
 Example **synthetic** message:
 

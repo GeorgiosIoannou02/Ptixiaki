@@ -1,4 +1,6 @@
-# PTIXIAKI — Complete Project Context & Handoff
+# IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection — Complete Project Context & Handoff
+
+**Current project name (6 November 2026):** IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection. This is the software/project name; the formal university thesis title still needs verification.
 
 **Project:** Bachelor's thesis (Πτυχιακή Εργασία), Department of Informatics, Ionian University (Ιόνιο Πανεπιστήμιο)  
 **Student:** Γεώργιος Ιωάννου (George Ioannou), student ID **INF2021006**  
@@ -220,7 +222,7 @@ Use **Docker Compose** to run the locally hosted backend/broker/database reprodu
 }
 ```
 
-Possible MQTT topic: `ptixiaki/equipment-space-01/telemetry`. Include reading timestamps, last-seen status, error/reconnect handling, sensor validation and basic protection against duplicate/missing messages. Set final sampling interval after testing (for example every 30–60 seconds), balancing storage, responsiveness, and detection resolution.
+Possible MQTT topic: `iot-monitor/equipment-space-01/telemetry`. Include reading timestamps, last-seen status, error/reconnect handling, sensor validation and basic protection against duplicate/missing messages. Set final sampling interval after testing (for example every 30–60 seconds), balancing storage, responsiveness, and detection resolution.
 
 ### Expected dashboard capabilities
 
@@ -349,9 +351,9 @@ A prior document called **`Istoriko.pdf`** and a Word file called **`Istoriko_Ep
 ### Suggested repository layout (illustrative only)
 
 ```text
-ptixiaki/
+iot-monitor/
 ├── AGENTS.md                 # Instructions for Codex / coding agents
-├── PTIXIAKI_PROJECT_CONTEXT.md
+├── PROJECT_CONTEXT.md
 ├── README.md
 ├── firmware/                 # ESP32 + Grove BME280
 ├── backend/                  # MQTT ingestion, FastAPI, database access
@@ -370,7 +372,7 @@ This layout is a suggestion, **not a claim that any such files already exist**.
 
 ## 12. Reusable starting prompt in a new project
 
-> Read `PTIXIAKI_PROJECT_CONTEXT.md` in full. We are continuing my Ionian University bachelor's thesis about **one ESP32 + one Grove BME280** for real-room environmental monitoring, MQTT/FastAPI/InfluxDB/React and a rigorous anomaly-detection comparison. The official thesis application has been submitted. Respect the **one-device, one-sensor-module, no-soldering** scope and distinguish planned tasks from completed ones. Start by checking what files/hardware I currently have and help me with the next concrete implementation milestone. Do not assume parts have been bought or the system has been deployed.
+> Read `PROJECT_CONTEXT.md` in full. We are continuing my Ionian University bachelor's thesis about **one ESP32 + one Grove BME280** for real-room environmental monitoring, MQTT/FastAPI/InfluxDB/React and a rigorous anomaly-detection comparison. The official thesis application has been submitted. Respect the **one-device, one-sensor-module, no-soldering** scope and distinguish planned tasks from completed ones. Start by checking what files/hardware I currently have and help me with the next concrete implementation milestone. Do not assume parts have been bought or the system has been deployed.
 
 ---
 

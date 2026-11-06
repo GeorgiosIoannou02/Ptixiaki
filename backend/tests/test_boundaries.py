@@ -4,9 +4,9 @@ from unittest.mock import patch
 
 import pytest
 
-from ptixiaki.config import Settings
-from ptixiaki.models import Telemetry
-from ptixiaki.store import InfluxStore
+from iot_monitor.config import Settings
+from iot_monitor.models import Telemetry
+from iot_monitor.store import InfluxStore
 
 
 @pytest.mark.parametrize("timestamp", ["1970-01-01T00:00:00+02:00", "0001-01-01T00:00:00Z"])
@@ -24,7 +24,7 @@ def test_timestamp_before_epoch_is_rejected_after_utc_normalization(timestamp):
 
 def test_readiness_uses_authenticated_query_for_configured_bucket_and_org():
     settings = Settings(influxdb_token="test-token", influxdb_org="configured-org", influxdb_bucket="configured-bucket")
-    with patch("ptixiaki.store.InfluxDBClient") as client_class:
+    with patch("iot_monitor.store.InfluxDBClient") as client_class:
         store = InfluxStore(settings)
         assert store.ping() is True
         constructor = client_class.call_args.kwargs
@@ -37,7 +37,7 @@ def test_readiness_uses_authenticated_query_for_configured_bucket_and_org():
 
 
 def test_readiness_propagates_authentication_failure():
-    with patch("ptixiaki.store.InfluxDBClient"):
+    with patch("iot_monitor.store.InfluxDBClient"):
         store = InfluxStore(Settings(influxdb_token="unusable-test-token"))
         store.client.query_api.return_value.query.side_effect = PermissionError("unauthorized")
         with pytest.raises(PermissionError):

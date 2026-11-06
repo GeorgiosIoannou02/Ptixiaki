@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from ptixiaki.config import Settings
-from ptixiaki.worker import IngestionWorker
+from iot_monitor.config import Settings
+from iot_monitor.worker import IngestionWorker
 
 
 class ImmediateEvent:

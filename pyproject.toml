@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27,<2"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ptixiaki"
+name = "iot-monitor"
 version = "0.1.0"
-description = "Single-device environmental telemetry prototype"
+description = "IoT Environmental Monitoring System for Equipment Spaces with Anomaly Detection"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi>=0.115,<1",
@@ -18,7 +18,7 @@ dependencies = [
 dev = ["pytest>=8,<10", "httpx>=0.28,<1"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["backend/ptixiaki"]
+packages = ["backend/iot_monitor"]
 
 [tool.pytest.ini_options]
 testpaths = ["backend/tests"]

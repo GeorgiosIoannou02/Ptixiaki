@@ -23,12 +23,12 @@ class Publisher:
         self.host = os.getenv("MQTT_HOST", "127.0.0.1")
         self.port = int(os.getenv("MQTT_PORT", "1883"))
         self.topic = os.getenv(
-            "MQTT_TOPIC", "ptixiaki/equipment-space-01/telemetry"
+            "MQTT_TOPIC", "iot-monitor/equipment-space-01/telemetry"
         )
         self.connected = Event()
         self.client = mqtt.Client(
             mqtt.CallbackAPIVersion.VERSION2,
-            client_id=f"ptixiaki-tool-{uuid4().hex[:16]}",
+            client_id=f"iot-monitor-tool-{uuid4().hex[:16]}",
         )
         username = os.getenv("MQTT_USERNAME")
         password = os.getenv("MQTT_PASSWORD")

@@ -7,8 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from ptixiaki.config import Settings
-from ptixiaki.export import export_csv, main, parse_timestamp, validate_interval
+from iot_monitor.config import Settings
+from iot_monitor.export import export_csv, main, parse_timestamp, validate_interval
 
 
 START = datetime(2026, 10, 1, tzinfo=timezone.utc)
