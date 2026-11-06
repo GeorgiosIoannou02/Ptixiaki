@@ -15,7 +15,7 @@ Example **synthetic** message:
 }
 ```
 
-`synthetic` is required. Only a future real hardware publisher should use `false`; the simulator always uses `true`. Firmware must synchronize its clock and include a timezone-aware ISO 8601 acquisition timestamp, not merely the time a server receives the message. Offset timestamps are normalized to UTC. Timestamps before the Unix epoch or more than two minutes in the future are rejected. API history selects measurements up to the current server time; readings within the allowed future clock skew become visible when their timestamps are reached.
+`synthetic` is required. The BME280 firmware uses `false` only for acquired sensor measurements; the simulator always uses `true`. Firmware must synchronize its clock and include a timezone-aware ISO 8601 acquisition timestamp, not merely the time a server receives the message. Offset timestamps are normalized to UTC. Timestamps before the Unix epoch or more than two minutes in the future are rejected. API history selects measurements up to the current server time; readings within the allowed future clock skew become visible when their timestamps are reached.
 
 ## Validation
 
@@ -36,7 +36,7 @@ Publish with MQTT **QoS 1** and no retained flag. Run exactly one ingestion work
 
 InfluxDB measurement `environment` uses `device_id` and `source` (`synthetic` or `sensor`) tags. Timestamp precision is microseconds. The identity `(device_id, source, timestamp)` is idempotent: redelivery of the same point does not create another row. A conflicting payload with the same identity overwrites the previous field values; this is not an immutable raw-message archive. Avoid timestamps closer than one microsecond and preserve timestamps when retrying a reading.
 
-Mosquitto persistence retains established subscriptions and queued QoS 1 messages across orderly restarts. Queues are bounded to 10,000 messages and persisted periodically; this is not a guarantee against every crash or extended outage. The first worker subscription must exist before broker queuing can protect it. The simulator waits for broker acknowledgements but does not provide durable publisher-side storage. Device-side buffering and power-loss recovery remain future firmware work.
+Mosquitto persistence retains established subscriptions and queued QoS 1 messages across orderly restarts. Queues are bounded to 10,000 messages and persisted periodically; this is not a guarantee against every crash or extended outage. The first worker subscription must exist before broker queuing can protect it. The simulator waits for broker acknowledgements but does not provide durable publisher-side storage. The firmware retains one unacknowledged payload in RAM and retries with the same timestamp; it skips new acquisitions during outages. Durable device-side buffering and power-loss recovery remain future work. See [firmware instructions](../firmware/README.md).
 
 ## Read API
 

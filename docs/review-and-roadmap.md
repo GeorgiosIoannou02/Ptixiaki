@@ -34,7 +34,7 @@ permissions; it does not deploy the project.
   and solderless cable; verify labels, 3.3 V logic and mounting.
 - [ ] Read temperature, RH and pressure over USB serial and check physically
   plausible values. Record sensor positioning and ambient comparison limitations.
-- [ ] Implement firmware for that confirmed board: I²C error handling, Wi-Fi/MQTT
+- [x] Implement generic ESP32-WROOM-32 firmware (6 November; actual board still unconfirmed): I²C error handling, Wi-Fi/MQTT
   reconnects, UTC clock synchronization, configurable acquisition interval and
   explicit `synthetic: false`. Convert pressure to hPa.
 - [ ] Test reboot, network loss and time synchronization failures. Decide a bounded

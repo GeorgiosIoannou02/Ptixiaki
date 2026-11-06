@@ -1,0 +1,21 @@
+# Opt-in authenticated LAN broker. Requires Docker Compose >= 2.24.4.
+services:
+  mqtt:
+    ports: !override
+      - "${MQTT_BIND_IP:?Set the computer LAN IPv4 address}:1883:1883"
+    environment:
+      MQTT_USERNAME: ${MQTT_USERNAME:?Set broker username}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:?Set broker password}
+    volumes:
+      - ./infrastructure/mosquitto.hardware.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./infrastructure/mqtt-passwords:/mosquitto/config/passwords:ro
+    healthcheck:
+      test: ["CMD-SHELL", 'mosquitto_pub -h 127.0.0.1 -u "$$MQTT_USERNAME" -P "$$MQTT_PASSWORD" -t iot-monitor/health -m ready']
+  worker:
+    environment:
+      MQTT_USERNAME: ${MQTT_USERNAME:?Set broker username}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:?Set broker password}
+  simulator:
+    environment:
+      MQTT_USERNAME: ${MQTT_USERNAME:?Set broker username}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:?Set broker password}
